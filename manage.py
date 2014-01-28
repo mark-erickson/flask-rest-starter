@@ -23,12 +23,7 @@ def run_web(args):
 
 def setup_logging(name=None):
     import logging
-    import sys
 
-    fmt = "%(asctime)s %(levelname)s %(filename)s:%(lineno)d:%(funcName)s" \
-          "    %(message)s"
-
-    logging.basicConfig(format=fmt)
     logger = logging.getLogger(name)
     logger.setLevel(logging.DEBUG)
 
