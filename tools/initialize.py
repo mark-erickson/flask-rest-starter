@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 
-import api
+import application
 import logging
-from api.config import local_config
 from api.security.models import Role
 from api.security.models import User
 from flask.ext.mongoengine import MongoEngine
@@ -38,7 +37,7 @@ def setup_logging():
     logger.setLevel(logging.DEBUG)
 
 def create_app():
-    return api.create_app(app_name='console', config=local_config())
+    return application.create_app(app_name='console', config=application.local_config())
 
 def init_app(admin_email, admin_password):
     app = create_app()

@@ -48,6 +48,13 @@ class HTTPMethodOverrideMiddleware(object):
         return self.app(environ, start_response)
 
 
+def _common_config():
+    config = {}
+
+    config['SECURITY_URL_PREFIX'] = '/session'
+
+    return config
+
 def appfog_config():
     import json
     import os
@@ -56,7 +63,7 @@ def appfog_config():
     if not services:
         return None
 
-    config = {}
+    config = _common_config()
 
     # general app config
     config['DEBUG'] = False
@@ -80,7 +87,7 @@ def appfog_config():
     return config
 
 def local_config():
-    config = {}
+    config = _common_config()
 
     # general app config
     config['DEBUG'] = True
