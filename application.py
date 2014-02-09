@@ -1,9 +1,12 @@
+import datetime
 from api.security.models import Role, User
+from bson.objectid import ObjectId
 from flask import jsonify
 from flask import Flask
 from flask.ext.mongoengine import MongoEngine
 from flask.ext.security import Security
 from flask.ext.security import MongoEngineUserDatastore
+from flask.json import JSONEncoder
 from werkzeug.exceptions import default_exceptions
 from werkzeug.exceptions import HTTPException
 from werkzeug.exceptions import SecurityError
@@ -47,6 +50,13 @@ class HTTPMethodOverrideMiddleware(object):
                 environ['CONTENT_LENGTH'] = '0'
         return self.app(environ, start_response)
 
+class MongoJsonEncoder(JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, (datetime.datetime, datetime.date)):
+            return obj.isoformat()
+        elif isinstance(obj, ObjectId):
+            return unicode(obj)
+        return JSONEncoder.default(self, obj)
 
 def _common_config():
     config = {}
@@ -118,6 +128,8 @@ def create_app(app_name, config, **kwargs):
     app.wsgi_app = HTTPMethodOverrideMiddleware(app.wsgi_app)
     if app.config['DEBUG'] == True:
         app.wsgi_app = CorsHeadersMiddleware(app.wsgi_app)
+
+    app.json_encoder = MongoJsonEncoder
 
     # error handling
     # see http://flask.pocoo.org/snippets/83
